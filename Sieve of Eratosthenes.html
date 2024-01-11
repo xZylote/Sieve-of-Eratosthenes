@@ -1,0 +1,35 @@
+<body style="font-family: sans-serif;">
+    <h2>Sieve of Eratosthenes</h2>
+    <input type="number" id="max" placeholder="Maximum Number">
+    <button type="submit" onclick="sieveOfEratosthenes(document.getElementById('max').value)">Generate Primes</button>
+    <h4 id="count"></h4>
+    <p id="result" style="word-wrap: break-word;"></p>
+</body>
+
+<script>
+    /**
+     * https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+     * Does not look for multipliers past sqrt(n) and no multiples less that n²
+     * 
+     * @param {number} max Highest number to check for primeness
+     * @return {number} All prime Numbers up to max
+    */
+    function sieveOfEratosthenes(max) {
+        // Create an array with numbers up to max and a prime flag for each
+        let N = []
+        N.push(false) // 0
+        N.push(false) // 1
+        for (let n = 2; n <= max; n++) N.push(true)
+
+        // Apply sieve of Eratosthenes for n >= 2
+        for (let n = 2; n <= Math.sqrt(N.length); n++) { // For every prime number, cross out their multiples.
+            if (!N[n]) continue // Do not check multiples of crossed out numbers (known non-primes)
+            for (let m = n * n; m < N.length; m += n) N[m] = false // Cross out all multiples j of the current prime number i as non-prime
+        }
+
+        let primes = N.map((prime, index) => prime ? index : false).filter(Boolean) // Filter indices in the array which remain true (not crossed out)
+
+        document.getElementById('count').innerText = max ? `There ${primes.length === 1 ? 'is' : 'are'} ${primes.length} prime number${primes.length === 1 ? '' : 's'} less than or equal to ${max}:` : 'Please enter a number.'
+        document.getElementById('result').innerText = primes
+    }
+</script>
